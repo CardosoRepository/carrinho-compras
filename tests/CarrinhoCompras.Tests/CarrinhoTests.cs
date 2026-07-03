@@ -180,4 +180,116 @@ public sealed class CarrinhoTests
             quantidadeEstoque,
             precoLiquido);
     }
+
+    [Fact]
+    public void CarrinhoVazio_DevePossuirTotaisZerados()
+    {
+        var carrinho = new Carrinho();
+
+        Assert.Empty(carrinho.Itens);
+        Assert.Equal(0m, carrinho.Subtotal);
+        Assert.Equal(0m, carrinho.Desconto);
+        Assert.Equal(0m, carrinho.Total);
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-1)]
+    public void AdicionarProdutoComQuantidadeInvalida_DeveLancarExcecao(
+        int quantidade)
+    {
+        var produto = CriarProduto(10, 25m);
+        var carrinho = new Carrinho();
+
+        var excecao = Assert.Throws<RegraDeNegocioException>(
+            () => carrinho.AdicionarProduto(produto, quantidade));
+
+        Assert.Contains(
+            "maior que zero",
+            excecao.Message,
+            StringComparison.OrdinalIgnoreCase);
+
+        Assert.Empty(carrinho.Itens);
+    }
+
+    [Fact]
+    public void SomarQuantidadeAcimaDoEstoque_DevePreservarQuantidadeAnterior()
+    {
+        var produto = CriarProduto(3, 20m);
+        var carrinho = new Carrinho();
+
+        carrinho.AdicionarProduto(produto, 2);
+
+        var excecao = Assert.Throws<RegraDeNegocioException>(
+            () => carrinho.AdicionarProduto(produto, 2));
+
+        Assert.Contains(
+            "Estoque insuficiente",
+            excecao.Message);
+
+        var item = Assert.Single(carrinho.Itens);
+
+        Assert.Equal(2, item.Quantidade);
+        Assert.Equal(40m, carrinho.Subtotal);
+    }
+
+    [Fact]
+    public void RemoverCupom_DeveRemoverDescontoERecalcularTotal()
+    {
+        var produto = CriarProduto(10, 100m);
+
+        var cupom = new Cupom(
+            Guid.NewGuid(),
+            "10OFF",
+            10m);
+
+        var carrinho = new Carrinho();
+
+        carrinho.AdicionarProduto(produto, 2);
+        carrinho.AplicarCupom(cupom);
+        carrinho.RemoverCupom();
+
+        Assert.Null(carrinho.CupomAplicado);
+        Assert.Null(carrinho.CupomId);
+        Assert.Equal(200m, carrinho.Subtotal);
+        Assert.Equal(0m, carrinho.Desconto);
+        Assert.Equal(200m, carrinho.Total);
+    }
+
+    [Fact]
+    public void CarrinhoFinalizado_DeveBloquearTodasAsAlteracoes()
+    {
+        var produto = CriarProduto(10, 100m);
+
+        var cupom = new Cupom(
+            Guid.NewGuid(),
+            "10OFF",
+            10m);
+
+        var outroCupom = new Cupom(
+            Guid.NewGuid(),
+            "15OFF",
+            15m);
+
+        var carrinho = new Carrinho();
+
+        carrinho.AdicionarProduto(produto, 2);
+        carrinho.AplicarCupom(cupom);
+        carrinho.Finalizar();
+
+        Assert.Throws<RegraDeNegocioException>(
+            () => carrinho.AlterarQuantidade(produto, 3));
+
+        Assert.Throws<RegraDeNegocioException>(
+            () => carrinho.RemoverProduto(produto.Id));
+
+        Assert.Throws<RegraDeNegocioException>(
+            () => carrinho.AplicarCupom(outroCupom));
+
+        Assert.Throws<RegraDeNegocioException>(
+            () => carrinho.RemoverCupom());
+
+        Assert.Throws<RegraDeNegocioException>(
+            () => carrinho.Finalizar());
+    }
 }
