@@ -1,4 +1,5 @@
 using CarrinhoCompras.Infrastructure;
+using CarrinhoCompras.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    await app.Services.InitializeDatabaseAsync();
 }
 else
 {

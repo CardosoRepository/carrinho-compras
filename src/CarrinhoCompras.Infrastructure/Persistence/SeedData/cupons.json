@@ -1,0 +1,12 @@
+[
+  {
+    "id": "10000000-0000-0000-0000-000000000001",
+    "codigoCupom": "10OFF",
+    "percentualDesconto": 10
+  },
+  {
+    "id": "10000000-0000-0000-0000-000000000002",
+    "codigoCupom": "15OFF",
+    "percentualDesconto": 15
+  }
+]

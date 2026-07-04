@@ -1,0 +1,62 @@
+[
+  {
+    "id": "00000000-0000-0000-0000-000000000001",
+    "descricaoProduto": "Notebook",
+    "quantidadeEstoque": 15,
+    "precoLiquido": 3499.90
+  },
+  {
+    "id": "00000000-0000-0000-0000-000000000002",
+    "descricaoProduto": "Smartphone",
+    "quantidadeEstoque": 25,
+    "precoLiquido": 1899.90
+  },
+  {
+    "id": "00000000-0000-0000-0000-000000000003",
+    "descricaoProduto": "Monitor 27 polegadas",
+    "quantidadeEstoque": 20,
+    "precoLiquido": 1299.90
+  },
+  {
+    "id": "00000000-0000-0000-0000-000000000004",
+    "descricaoProduto": "Teclado mecânico",
+    "quantidadeEstoque": 30,
+    "precoLiquido": 349.90
+  },
+  {
+    "id": "00000000-0000-0000-0000-000000000005",
+    "descricaoProduto": "Mouse sem fio",
+    "quantidadeEstoque": 40,
+    "precoLiquido": 129.90
+  },
+  {
+    "id": "00000000-0000-0000-0000-000000000006",
+    "descricaoProduto": "Headset",
+    "quantidadeEstoque": 18,
+    "precoLiquido": 279.90
+  },
+  {
+    "id": "00000000-0000-0000-0000-000000000007",
+    "descricaoProduto": "Webcam Full HD",
+    "quantidadeEstoque": 12,
+    "precoLiquido": 399.90
+  },
+  {
+    "id": "00000000-0000-0000-0000-000000000008",
+    "descricaoProduto": "SSD 1 TB",
+    "quantidadeEstoque": 22,
+    "precoLiquido": 499.90
+  },
+  {
+    "id": "00000000-0000-0000-0000-000000000009",
+    "descricaoProduto": "Cadeira de escritório",
+    "quantidadeEstoque": 10,
+    "precoLiquido": 1199.90
+  },
+  {
+    "id": "00000000-0000-0000-0000-000000000010",
+    "descricaoProduto": "Hub USB-C",
+    "quantidadeEstoque": 35,
+    "precoLiquido": 219.90
+  }
+]
