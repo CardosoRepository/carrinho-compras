@@ -18,6 +18,7 @@ public static class DependencyInjection
         services.AddScoped<RemoverItemUseCase>();
         services.AddScoped<AplicarCupomUseCase>();
         services.AddScoped<RemoverCupomUseCase>();
+        services.AddScoped<FinalizarCarrinhoUseCase>();
 
         return services;
     }

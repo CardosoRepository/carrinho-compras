@@ -134,3 +134,56 @@ Accept: application/json
 
 DELETE {{baseUrl}}/api/carrinhos/{{criarCarrinho.response.body.$.id}}/cupom
 Accept: application/json
+
+### Criar carrinho para testar a finalização
+
+# @name criarCarrinhoFinalizacao
+POST {{baseUrl}}/api/carrinhos
+Accept: application/json
+
+### Adicionar produto ao carrinho que será finalizado
+
+POST {{baseUrl}}/api/carrinhos/{{criarCarrinhoFinalizacao.response.body.$.id}}/itens
+Content-Type: application/json
+Accept: application/json
+
+{
+  "produtoId": "{{produtoId}}",
+  "quantidade": 2
+}
+
+### Aplicar cupom antes da finalização
+
+PUT {{baseUrl}}/api/carrinhos/{{criarCarrinhoFinalizacao.response.body.$.id}}/cupom
+Content-Type: application/json
+Accept: application/json
+
+{
+  "codigoCupom": "10OFF"
+}
+
+### Finalizar carrinho
+
+POST {{baseUrl}}/api/carrinhos/{{criarCarrinhoFinalizacao.response.body.$.id}}/finalizar
+Accept: application/json
+
+### Consultar carrinho finalizado
+
+GET {{baseUrl}}/api/carrinhos/{{criarCarrinhoFinalizacao.response.body.$.id}}
+Accept: application/json
+
+### Tentar alterar carrinho finalizado
+
+POST {{baseUrl}}/api/carrinhos/{{criarCarrinhoFinalizacao.response.body.$.id}}/itens
+Content-Type: application/json
+Accept: application/json
+
+{
+  "produtoId": "{{produtoId}}",
+  "quantidade": 1
+}
+
+### Tentar finalizar novamente
+
+POST {{baseUrl}}/api/carrinhos/{{criarCarrinhoFinalizacao.response.body.$.id}}/finalizar
+Accept: application/json

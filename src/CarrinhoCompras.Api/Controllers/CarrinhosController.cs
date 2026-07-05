@@ -16,6 +16,7 @@ public sealed class CarrinhosController : ControllerBase
     private readonly RemoverItemUseCase _removerItemUseCase;
     private readonly AplicarCupomUseCase _aplicarCupomUseCase;
     private readonly RemoverCupomUseCase _removerCupomUseCase;
+    private readonly FinalizarCarrinhoUseCase _finalizarCarrinhoUseCase;
 
 
     public CarrinhosController(
@@ -25,7 +26,8 @@ public sealed class CarrinhosController : ControllerBase
         AlterarQuantidadeItemUseCase alterarQuantidadeItemUseCase,
         RemoverItemUseCase removerItemUseCase,
         AplicarCupomUseCase aplicarCupomUseCase,
-        RemoverCupomUseCase removerCupomUseCase)
+        RemoverCupomUseCase removerCupomUseCase,
+        FinalizarCarrinhoUseCase finalizarCarrinhoUseCase)
     {
         _criarCarrinhoUseCase = criarCarrinhoUseCase;
         _obterCarrinhoUseCase = obterCarrinhoUseCase;
@@ -34,6 +36,7 @@ public sealed class CarrinhosController : ControllerBase
         _removerItemUseCase = removerItemUseCase;
         _aplicarCupomUseCase = aplicarCupomUseCase;
         _removerCupomUseCase = removerCupomUseCase;
+        _finalizarCarrinhoUseCase = finalizarCarrinhoUseCase;
     }
 
     [HttpPost]
@@ -180,6 +183,28 @@ public sealed class CarrinhosController : ControllerBase
         CancellationToken cancellationToken)
     {
         var carrinho = await _removerCupomUseCase.ExecutarAsync(carrinhoId, cancellationToken);
+        return Ok(carrinho);
+    }
+
+    [HttpPost("{carrinhoId:guid}/finalizar")]
+    [ProducesResponseType(
+        typeof(CarrinhoResponse),
+        StatusCodes.Status200OK)]
+    [ProducesResponseType(
+        typeof(ProblemDetails),
+        StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(
+        typeof(ProblemDetails),
+        StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<CarrinhoResponse>> Finalizar(
+        Guid carrinhoId,
+        CancellationToken cancellationToken)
+    {
+        var carrinho =
+            await _finalizarCarrinhoUseCase.ExecutarAsync(
+                carrinhoId,
+                cancellationToken);
+
         return Ok(carrinho);
     }
 }
