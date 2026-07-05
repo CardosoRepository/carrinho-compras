@@ -1,3 +1,4 @@
+using CarrinhoCompras.Application;
 using CarrinhoCompras.Infrastructure;
 using CarrinhoCompras.Infrastructure.Persistence;
 
@@ -9,6 +10,7 @@ var connectionString =
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+builder.Services.AddApplication();
 builder.Services.AddInfrastructure(connectionString);
 
 var app = builder.Build();

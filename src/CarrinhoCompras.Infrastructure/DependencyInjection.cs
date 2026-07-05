@@ -1,4 +1,6 @@
+using CarrinhoCompras.Application.Abstractions.Persistence;
 using CarrinhoCompras.Infrastructure.Persistence;
+using CarrinhoCompras.Infrastructure.Persistence.Repositories;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,7 +20,12 @@ public static class DependencyInjection
                 nameof(connectionString));
         }
 
-        services.AddDbContext<CarrinhoComprasDbContext>(options => options.UseNpgsql(connectionString));
+        services.AddDbContext<CarrinhoComprasDbContext>(
+            options =>
+                options.UseNpgsql(connectionString));
+
+        services.AddScoped<IProdutoRepository, ProdutoRepository>();
+        services.AddScoped<ICarrinhoRepository, CarrinhoRepository>();
 
         return services;
     }
