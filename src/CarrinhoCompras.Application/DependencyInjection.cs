@@ -13,6 +13,7 @@ public static class DependencyInjection
         services.AddScoped<ListarProdutosUseCase>();
         services.AddScoped<CriarCarrinhoUseCase>();
         services.AddScoped<ObterCarrinhoUseCase>();
+        services.AddScoped<AdicionarItemUseCase>();
 
         return services;
     }

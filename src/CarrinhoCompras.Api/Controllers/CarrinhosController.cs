@@ -11,13 +11,16 @@ public sealed class CarrinhosController : ControllerBase
 {
     private readonly CriarCarrinhoUseCase _criarCarrinhoUseCase;
     private readonly ObterCarrinhoUseCase _obterCarrinhoUseCase;
+    private readonly AdicionarItemUseCase _adicionarItemUseCase;
 
     public CarrinhosController(
         CriarCarrinhoUseCase criarCarrinhoUseCase,
-        ObterCarrinhoUseCase obterCarrinhoUseCase)
+        ObterCarrinhoUseCase obterCarrinhoUseCase,
+        AdicionarItemUseCase adicionarItemUseCase)
     {
         _criarCarrinhoUseCase = criarCarrinhoUseCase;
         _obterCarrinhoUseCase = obterCarrinhoUseCase;
+        _adicionarItemUseCase = adicionarItemUseCase;
     }
 
     [HttpPost]
@@ -38,8 +41,12 @@ public sealed class CarrinhosController : ControllerBase
     }
 
     [HttpGet("{carrinhoId:guid}")]
-    [ProducesResponseType(typeof(CarrinhoResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(
+        typeof(CarrinhoResponse),
+        StatusCodes.Status200OK)]
+    [ProducesResponseType(
+        typeof(ProblemDetails),
+        StatusCodes.Status404NotFound)]
     public async Task<ActionResult<CarrinhoResponse>> ObterPorId(
         Guid carrinhoId,
         CancellationToken cancellationToken)
@@ -47,6 +54,30 @@ public sealed class CarrinhosController : ControllerBase
         var carrinho =
             await _obterCarrinhoUseCase.ExecutarAsync(
                 carrinhoId,
+                cancellationToken);
+
+        return Ok(carrinho);
+    }
+
+    [HttpPost("{carrinhoId:guid}/itens")]
+    [ProducesResponseType(
+        typeof(CarrinhoResponse),
+        StatusCodes.Status200OK)]
+    [ProducesResponseType(
+        typeof(ProblemDetails),
+        StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(
+        typeof(ProblemDetails),
+        StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<CarrinhoResponse>> AdicionarItem(
+        Guid carrinhoId,
+        [FromBody] AdicionarItemRequest request,
+        CancellationToken cancellationToken)
+    {
+        var carrinho =
+            await _adicionarItemUseCase.ExecutarAsync(
+                carrinhoId,
+                request,
                 cancellationToken);
 
         return Ok(carrinho);

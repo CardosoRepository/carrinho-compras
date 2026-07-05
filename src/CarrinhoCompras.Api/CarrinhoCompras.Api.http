@@ -1,4 +1,5 @@
 @baseUrl = http://localhost:5008
+@produtoId = 00000000-0000-0000-0000-000000000001
 
 ### Listar produtos
 
@@ -11,10 +12,43 @@ Accept: application/json
 POST {{baseUrl}}/api/carrinhos
 Accept: application/json
 
+### Adicionar produto ao carrinho
+
+POST {{baseUrl}}/api/carrinhos/{{criarCarrinho.response.body.$.id}}/itens
+Content-Type: application/json
+Accept: application/json
+
+{
+  "produtoId": "{{produtoId}}",
+  "quantidade": 2
+}
+
+### Adicionar novamente o mesmo produto
+
+POST {{baseUrl}}/api/carrinhos/{{criarCarrinho.response.body.$.id}}/itens
+Content-Type: application/json
+Accept: application/json
+
+{
+  "produtoId": "{{produtoId}}",
+  "quantidade": 1
+}
+
 ### Consultar carrinho criado
 
 GET {{baseUrl}}/api/carrinhos/{{criarCarrinho.response.body.$.id}}
 Accept: application/json
+
+### Tentar adicionar quantidade acima do estoque
+
+POST {{baseUrl}}/api/carrinhos/{{criarCarrinho.response.body.$.id}}/itens
+Content-Type: application/json
+Accept: application/json
+
+{
+  "produtoId": "{{produtoId}}",
+  "quantidade": 100
+}
 
 ### Consultar carrinho inexistente
 
