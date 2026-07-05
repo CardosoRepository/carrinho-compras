@@ -12,15 +12,18 @@ public sealed class CarrinhosController : ControllerBase
     private readonly CriarCarrinhoUseCase _criarCarrinhoUseCase;
     private readonly ObterCarrinhoUseCase _obterCarrinhoUseCase;
     private readonly AdicionarItemUseCase _adicionarItemUseCase;
+    private readonly AlterarQuantidadeItemUseCase _alterarQuantidadeItemUseCase;
 
     public CarrinhosController(
         CriarCarrinhoUseCase criarCarrinhoUseCase,
         ObterCarrinhoUseCase obterCarrinhoUseCase,
-        AdicionarItemUseCase adicionarItemUseCase)
+        AdicionarItemUseCase adicionarItemUseCase,
+        AlterarQuantidadeItemUseCase alterarQuantidadeItemUseCase)
     {
         _criarCarrinhoUseCase = criarCarrinhoUseCase;
         _obterCarrinhoUseCase = obterCarrinhoUseCase;
         _adicionarItemUseCase = adicionarItemUseCase;
+        _alterarQuantidadeItemUseCase = alterarQuantidadeItemUseCase;
     }
 
     [HttpPost]
@@ -77,6 +80,32 @@ public sealed class CarrinhosController : ControllerBase
         var carrinho =
             await _adicionarItemUseCase.ExecutarAsync(
                 carrinhoId,
+                request,
+                cancellationToken);
+
+        return Ok(carrinho);
+    }
+
+    [HttpPut("{carrinhoId:guid}/itens/{produtoId:guid}")]
+    [ProducesResponseType(
+        typeof(CarrinhoResponse),
+        StatusCodes.Status200OK)]
+    [ProducesResponseType(
+        typeof(ProblemDetails),
+        StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(
+        typeof(ProblemDetails),
+        StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<CarrinhoResponse>> AlterarQuantidadeItem(
+        Guid carrinhoId,
+        Guid produtoId,
+        [FromBody] AlterarQuantidadeItemRequest request,
+        CancellationToken cancellationToken)
+    {
+        var carrinho =
+            await _alterarQuantidadeItemUseCase.ExecutarAsync(
+                carrinhoId,
+                produtoId,
                 request,
                 cancellationToken);
 

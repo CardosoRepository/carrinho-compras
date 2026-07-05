@@ -59,3 +59,33 @@ Accept: application/json
 
 GET {{baseUrl}}/openapi/v1.json
 Accept: application/json
+
+### Alterar a quantidade exata do produto
+
+PUT {{baseUrl}}/api/carrinhos/{{criarCarrinho.response.body.$.id}}/itens/{{produtoId}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "quantidade": 5
+}
+
+### Tentar alterar para quantidade zero
+
+PUT {{baseUrl}}/api/carrinhos/{{criarCarrinho.response.body.$.id}}/itens/{{produtoId}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "quantidade": 0
+}
+
+### Tentar alterar para quantidade acima do estoque
+
+PUT {{baseUrl}}/api/carrinhos/{{criarCarrinho.response.body.$.id}}/itens/{{produtoId}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "quantidade": 100
+}
