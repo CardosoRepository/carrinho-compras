@@ -99,3 +99,38 @@ Accept: application/json
 
 DELETE {{baseUrl}}/api/carrinhos/{{criarCarrinho.response.body.$.id}}/itens/{{produtoId}}
 Accept: application/json
+
+### Aplicar cupom de 10%
+
+PUT {{baseUrl}}/api/carrinhos/{{criarCarrinho.response.body.$.id}}/cupom
+Content-Type: application/json
+Accept: application/json
+
+{
+  "codigoCupom": "10OFF"
+}
+
+### Substituir pelo cupom de 15%
+
+PUT {{baseUrl}}/api/carrinhos/{{criarCarrinho.response.body.$.id}}/cupom
+Content-Type: application/json
+Accept: application/json
+
+{
+  "codigoCupom": "15OFF"
+}
+
+### Tentar aplicar cupom inválido
+
+PUT {{baseUrl}}/api/carrinhos/{{criarCarrinho.response.body.$.id}}/cupom
+Content-Type: application/json
+Accept: application/json
+
+{
+  "codigoCupom": "INVALIDO"
+}
+
+### Remover cupom
+
+DELETE {{baseUrl}}/api/carrinhos/{{criarCarrinho.response.body.$.id}}/cupom
+Accept: application/json

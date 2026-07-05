@@ -14,19 +14,26 @@ public sealed class CarrinhosController : ControllerBase
     private readonly AdicionarItemUseCase _adicionarItemUseCase;
     private readonly AlterarQuantidadeItemUseCase _alterarQuantidadeItemUseCase;
     private readonly RemoverItemUseCase _removerItemUseCase;
+    private readonly AplicarCupomUseCase _aplicarCupomUseCase;
+    private readonly RemoverCupomUseCase _removerCupomUseCase;
+
 
     public CarrinhosController(
         CriarCarrinhoUseCase criarCarrinhoUseCase,
         ObterCarrinhoUseCase obterCarrinhoUseCase,
         AdicionarItemUseCase adicionarItemUseCase,
         AlterarQuantidadeItemUseCase alterarQuantidadeItemUseCase,
-        RemoverItemUseCase removerItemUseCase)
+        RemoverItemUseCase removerItemUseCase,
+        AplicarCupomUseCase aplicarCupomUseCase,
+        RemoverCupomUseCase removerCupomUseCase)
     {
         _criarCarrinhoUseCase = criarCarrinhoUseCase;
         _obterCarrinhoUseCase = obterCarrinhoUseCase;
         _adicionarItemUseCase = adicionarItemUseCase;
         _alterarQuantidadeItemUseCase = alterarQuantidadeItemUseCase;
         _removerItemUseCase = removerItemUseCase;
+        _aplicarCupomUseCase = aplicarCupomUseCase;
+        _removerCupomUseCase = removerCupomUseCase;
     }
 
     [HttpPost]
@@ -136,6 +143,43 @@ public sealed class CarrinhosController : ControllerBase
                 produtoId,
                 cancellationToken);
 
+        return Ok(carrinho);
+    }
+
+    [HttpPut("{carrinhoId:guid}/cupom")]
+    [ProducesResponseType(
+        typeof(CarrinhoResponse),
+        StatusCodes.Status200OK)]
+    [ProducesResponseType(
+        typeof(ProblemDetails),
+        StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(
+        typeof(ProblemDetails),
+        StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<CarrinhoResponse>> AplicarCupom(
+        Guid carrinhoId,
+        [FromBody] AplicarCupomRequest request,
+        CancellationToken cancellationToken)
+    {
+        var carrinho = await _aplicarCupomUseCase.ExecutarAsync(carrinhoId, request, cancellationToken);
+        return Ok(carrinho);
+    }
+
+    [HttpDelete("{carrinhoId:guid}/cupom")]
+    [ProducesResponseType(
+        typeof(CarrinhoResponse),
+        StatusCodes.Status200OK)]
+    [ProducesResponseType(
+        typeof(ProblemDetails),
+        StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(
+        typeof(ProblemDetails),
+        StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<CarrinhoResponse>> RemoverCupom(
+        Guid carrinhoId,
+        CancellationToken cancellationToken)
+    {
+        var carrinho = await _removerCupomUseCase.ExecutarAsync(carrinhoId, cancellationToken);
         return Ok(carrinho);
     }
 }
