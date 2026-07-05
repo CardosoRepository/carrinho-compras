@@ -89,3 +89,13 @@ Accept: application/json
 {
   "quantidade": 100
 }
+
+### Remover produto do carrinho
+
+DELETE {{baseUrl}}/api/carrinhos/{{criarCarrinho.response.body.$.id}}/itens/{{produtoId}}
+Accept: application/json
+
+### Tentar remover novamente o mesmo produto
+
+DELETE {{baseUrl}}/api/carrinhos/{{criarCarrinho.response.body.$.id}}/itens/{{produtoId}}
+Accept: application/json

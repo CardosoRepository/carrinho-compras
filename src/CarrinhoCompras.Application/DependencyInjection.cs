@@ -15,6 +15,7 @@ public static class DependencyInjection
         services.AddScoped<ObterCarrinhoUseCase>();
         services.AddScoped<AdicionarItemUseCase>();
         services.AddScoped<AlterarQuantidadeItemUseCase>();
+        services.AddScoped<RemoverItemUseCase>();
 
         return services;
     }
