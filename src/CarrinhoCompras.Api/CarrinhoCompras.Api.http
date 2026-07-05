@@ -1,6 +1,27 @@
-@CarrinhoCompras.Api_HostAddress = http://localhost:5008
+@baseUrl = http://localhost:5008
 
-GET {{CarrinhoCompras.Api_HostAddress}}/weatherforecast/
+### Listar produtos
+
+GET {{baseUrl}}/api/produtos
 Accept: application/json
 
-###
+### Criar carrinho
+
+# @name criarCarrinho
+POST {{baseUrl}}/api/carrinhos
+Accept: application/json
+
+### Consultar carrinho criado
+
+GET {{baseUrl}}/api/carrinhos/{{criarCarrinho.response.body.$.id}}
+Accept: application/json
+
+### Consultar carrinho inexistente
+
+GET {{baseUrl}}/api/carrinhos/aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa
+Accept: application/json
+
+### Documento OpenAPI
+
+GET {{baseUrl}}/openapi/v1.json
+Accept: application/json
