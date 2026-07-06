@@ -386,6 +386,126 @@ button:disabled {
   text-decoration: underline;
 }
 
+.botao--secundario {
+  color: #2457d6;
+  background: #eaf0ff;
+  border: 1px solid #cbd8ff;
+}
+
+.botao--secundario:hover:not(:disabled) {
+  background: #dce6ff;
+}
+
+.acoes-carrinho {
+  display: grid;
+  gap: 18px;
+  margin-top: 22px;
+  padding-top: 22px;
+  border-top: 1px solid #e2e6ee;
+}
+
+.cupom {
+  display: grid;
+  gap: 14px;
+}
+
+.cupom__titulo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cupom__titulo h3 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.cupom-aplicado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px;
+  color: #17613a;
+  background: #e4f7ec;
+  border: 1px solid #b8e5ca;
+  border-radius: 10px;
+}
+
+.cupom-aplicado > div {
+  display: grid;
+  gap: 3px;
+}
+
+.cupom-aplicado span {
+  font-size: 0.8rem;
+}
+
+.cupom-aplicado__status {
+  padding: 4px 8px;
+  background: #ffffff;
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.cupom-form {
+  display: grid;
+  gap: 8px;
+}
+
+.cupom-form label {
+  color: #6d788d;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.cupom-form__linha {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.cupom-form input {
+  width: 100%;
+  min-width: 0;
+  height: 42px;
+  padding: 0 12px;
+  color: #172033;
+  background: #ffffff;
+  border: 1px solid #cbd2df;
+  border-radius: 9px;
+  outline: none;
+}
+
+.cupom-form input:focus {
+  border-color: #2457d6;
+  box-shadow: 0 0 0 3px rgb(36 87 214 / 12%);
+}
+
+.cupom-form input:disabled {
+  color: #8a94a8;
+  background: #f1f3f7;
+}
+
+.carrinho-finalizado {
+  padding: 14px;
+  color: #6b4c00;
+  background: #fff7dc;
+  border: 1px solid #ecd993;
+  border-radius: 10px;
+}
+
+.carrinho-finalizado strong {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.carrinho-finalizado p {
+  margin: 0;
+  font-size: 0.85rem;
+}
+
 @media (max-width: 900px) {
   .conteudo {
     grid-template-columns: 1fr;
@@ -442,5 +562,18 @@ button:disabled {
   .botao-remover {
     min-height: 36px;
     text-align: left;
+  }
+
+  .cupom-form__linha {
+    grid-template-columns: 1fr;
+  }
+
+  .cupom-form__linha .botao {
+    width: 100%;
+  }
+
+  .cupom__titulo {
+    align-items: flex-start;
+    flex-direction: column;
   }
 }

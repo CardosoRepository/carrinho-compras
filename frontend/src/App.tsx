@@ -7,9 +7,12 @@ import {
   adicionarItem,
   alterarQuantidadeItem,
   ApiError,
+  aplicarCupom,
   criarCarrinho,
+  finalizarCarrinho,
   listarProdutos,
   obterCarrinho,
+  removerCupom,
   removerItem,
 } from "./services/api";
 
@@ -29,6 +32,10 @@ function App() {
   const [produtoEmProcessamento, setProdutoEmProcessamento] = useState<
     string | null
   >(null);
+
+  const [processandoCupom, setProcessandoCupom] = useState(false);
+
+  const [finalizandoCarrinho, setFinalizandoCarrinho] = useState(false);
 
   const [erro, setErro] = useState<string | null>(null);
 
@@ -173,6 +180,67 @@ function App() {
     }
   }
 
+  async function handleAplicarCupom(codigoCupom: string): Promise<boolean> {
+    if (!carrinho) {
+      return false;
+    }
+
+    setProcessandoCupom(true);
+    setErro(null);
+
+    try {
+      const carrinhoAtualizado = await aplicarCupom(carrinho.id, codigoCupom);
+
+      setCarrinho(carrinhoAtualizado);
+
+      return true;
+    } catch (error) {
+      setErro(obterMensagemErro(error));
+
+      return false;
+    } finally {
+      setProcessandoCupom(false);
+    }
+  }
+
+  async function handleRemoverCupom() {
+    if (!carrinho) {
+      return;
+    }
+
+    setProcessandoCupom(true);
+    setErro(null);
+
+    try {
+      const carrinhoAtualizado = await removerCupom(carrinho.id);
+
+      setCarrinho(carrinhoAtualizado);
+    } catch (error) {
+      setErro(obterMensagemErro(error));
+    } finally {
+      setProcessandoCupom(false);
+    }
+  }
+
+  async function handleFinalizarCarrinho() {
+    if (!carrinho) {
+      return;
+    }
+
+    setFinalizandoCarrinho(true);
+    setErro(null);
+
+    try {
+      const carrinhoAtualizado = await finalizarCarrinho(carrinho.id);
+
+      setCarrinho(carrinhoAtualizado);
+    } catch (error) {
+      setErro(obterMensagemErro(error));
+    } finally {
+      setFinalizandoCarrinho(false);
+    }
+  }
+
   if (carregando) {
     return (
       <main className="pagina-centralizada">
@@ -247,9 +315,15 @@ function App() {
           carrinho={carrinho}
           criandoCarrinho={criandoCarrinho}
           produtoEmProcessamento={produtoEmProcessamento}
+          processandoCupom={processandoCupom}
+          finalizandoCarrinho={finalizandoCarrinho}
           onCriarCarrinho={handleCriarCarrinho}
+          onCriarNovoCarrinho={handleCriarCarrinho}
           onAlterarQuantidade={handleAlterarQuantidade}
           onRemoverItem={handleRemoverItem}
+          onAplicarCupom={handleAplicarCupom}
+          onRemoverCupom={handleRemoverCupom}
+          onFinalizarCarrinho={handleFinalizarCarrinho}
         />
       </main>
     </div>

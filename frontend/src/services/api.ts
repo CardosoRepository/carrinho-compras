@@ -142,3 +142,40 @@ export function removerItem(
         },
     );
 }
+
+export function aplicarCupom(
+    carrinhoId: string,
+    codigoCupom: string,
+): Promise<Carrinho> {
+    return request<Carrinho>(
+        `/api/carrinhos/${carrinhoId}/cupom`,
+        {
+            method: "PUT",
+            body: JSON.stringify({
+                codigoCupom,
+            }),
+        },
+    );
+}
+
+export function removerCupom(
+    carrinhoId: string,
+): Promise<Carrinho> {
+    return request<Carrinho>(
+        `/api/carrinhos/${carrinhoId}/cupom`,
+        {
+            method: "DELETE",
+        },
+    );
+}
+
+export function finalizarCarrinho(
+    carrinhoId: string,
+): Promise<Carrinho> {
+    return request<Carrinho>(
+        `/api/carrinhos/${carrinhoId}/finalizar`,
+        {
+            method: "POST",
+        },
+    );
+}

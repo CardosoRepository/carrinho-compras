@@ -1,23 +1,35 @@
 import type { Carrinho, ItemCarrinho } from "../types/api";
-
+import { AcoesCarrinho } from "./AcoesCarrinho";
 import { formatarMoeda } from "../utils/formatadores";
 
 interface ResumoCarrinhoProps {
   carrinho: Carrinho | null;
   criandoCarrinho: boolean;
   produtoEmProcessamento: string | null;
+  processandoCupom: boolean;
+  finalizandoCarrinho: boolean;
   onCriarCarrinho: () => void;
+  onCriarNovoCarrinho: () => void;
   onAlterarQuantidade: (produtoId: string, quantidade: number) => void;
   onRemoverItem: (produtoId: string) => void;
+  onAplicarCupom: (codigoCupom: string) => Promise<boolean>;
+  onRemoverCupom: () => void;
+  onFinalizarCarrinho: () => void;
 }
 
 export function ResumoCarrinho({
   carrinho,
   criandoCarrinho,
   produtoEmProcessamento,
+  processandoCupom,
+  finalizandoCarrinho,
   onCriarCarrinho,
+  onCriarNovoCarrinho,
   onAlterarQuantidade,
   onRemoverItem,
+  onAplicarCupom,
+  onRemoverCupom,
+  onFinalizarCarrinho,
 }: ResumoCarrinhoProps) {
   if (!carrinho) {
     return (
@@ -100,6 +112,18 @@ export function ResumoCarrinho({
           <strong>{formatarMoeda.format(carrinho.total)}</strong>
         </div>
       </div>
+      
+      <AcoesCarrinho
+        carrinho={carrinho}
+        processandoCupom={processandoCupom}
+        finalizandoCarrinho={finalizandoCarrinho}
+        criandoCarrinho={criandoCarrinho}
+        operacaoDeItemEmAndamento={produtoEmProcessamento !== null}
+        onAplicarCupom={onAplicarCupom}
+        onRemoverCupom={onRemoverCupom}
+        onFinalizarCarrinho={onFinalizarCarrinho}
+        onCriarNovoCarrinho={onCriarNovoCarrinho}
+      />
     </aside>
   );
 }
