@@ -1,0 +1,8 @@
+$utf8SemBom =
+  New-Object System.Text.UTF8Encoding($false)
+
+[System.IO.File]::WriteAllText(
+  (Join-Path $PWD ".gitattributes"),
+  "* text=auto eol=lf`n",
+  $utf8SemBom
+)

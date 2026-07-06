@@ -9,12 +9,30 @@ var connectionString =
     builder.Configuration.GetConnectionString("PostgreSql")
     ?? throw new InvalidOperationException("A string de conexão 'PostgreSql' não foi configurada.");
 
+var allowedOrigins =
+    builder.Configuration
+        .GetSection("Cors:AllowedOrigins")
+        .Get<string[]>()
+    ?? [];
+
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(connectionString);
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(
+        "Frontend",
+        policy =>
+        {
+            policy
+                .WithOrigins(allowedOrigins)
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+});
 
 var app = builder.Build();
 
@@ -29,6 +47,8 @@ else
 {
     app.UseHttpsRedirection();
 }
+
+app.UseCors("Frontend");
 
 app.UseAuthorization();
 
