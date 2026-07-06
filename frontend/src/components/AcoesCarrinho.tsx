@@ -9,7 +9,7 @@ interface AcoesCarrinhoProps {
   processandoCupom: boolean;
   finalizandoCarrinho: boolean;
   criandoCarrinho: boolean;
-  operacaoDeItemEmAndamento: boolean;
+  operacaoEmAndamento: boolean;
   onAplicarCupom: (codigoCupom: string) => Promise<boolean>;
   onRemoverCupom: () => void;
   onFinalizarCarrinho: () => void;
@@ -21,7 +21,7 @@ export function AcoesCarrinho({
   processandoCupom,
   finalizandoCarrinho,
   criandoCarrinho,
-  operacaoDeItemEmAndamento,
+  operacaoEmAndamento,
   onAplicarCupom,
   onRemoverCupom,
   onFinalizarCarrinho,
@@ -63,7 +63,7 @@ export function AcoesCarrinho({
         <button
           className="botao botao--secundario botao--largura-total"
           type="button"
-          disabled={criandoCarrinho}
+          disabled={operacaoEmAndamento}
           onClick={onCriarNovoCarrinho}
         >
           {criandoCarrinho ? "Criando..." : "Criar novo carrinho"}
@@ -84,7 +84,7 @@ export function AcoesCarrinho({
             <button
               className="botao-remover"
               type="button"
-              disabled={processandoCupom}
+              disabled={operacaoEmAndamento}
               onClick={onRemoverCupom}
             >
               {processandoCupom ? "Processando..." : "Remover cupom"}
@@ -117,14 +117,14 @@ export function AcoesCarrinho({
               value={codigoCupom}
               maxLength={20}
               placeholder="10OFF ou 15OFF"
-              disabled={processandoCupom}
+              disabled={operacaoEmAndamento}
               onChange={(event) => setCodigoCupom(event.target.value)}
             />
 
             <button
               className="botao botao--secundario"
               type="submit"
-              disabled={processandoCupom || !codigoCupom.trim()}
+              disabled={operacaoEmAndamento || !codigoCupom.trim()}
             >
               {processandoCupom
                 ? "Aplicando..."
@@ -139,9 +139,7 @@ export function AcoesCarrinho({
       <button
         className="botao botao--primario botao--largura-total"
         type="button"
-        disabled={
-          finalizandoCarrinho || processandoCupom || operacaoDeItemEmAndamento
-        }
+        disabled={operacaoEmAndamento}
         onClick={onFinalizarCarrinho}
       >
         {finalizandoCarrinho ? "Finalizando..." : "Finalizar carrinho"}

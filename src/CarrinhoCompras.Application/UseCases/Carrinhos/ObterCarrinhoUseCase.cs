@@ -26,20 +26,12 @@ public sealed class ObterCarrinhoUseCase
             await _carrinhoRepository.ObterPorIdAsync(
                 carrinhoId,
                 cancellationToken)
-            ?? throw new RecursoNaoEncontradoException($"O carrinho '{carrinhoId}' não foi encontrado.");
+            ?? throw new RecursoNaoEncontradoException(
+                $"O carrinho '{carrinhoId}' não foi encontrado.");
 
-        var produtoIds =
-            carrinho.Itens
-                .Select(item => item.ProdutoId)
-                .Distinct();
-
-        var produtos =
-            await _produtoRepository.ObterPorIdsAsync(
-                produtoIds,
-                cancellationToken);
-
-        return CarrinhoResponseFactory.Criar(
+        return await CarrinhoResponseFactory.CriarAsync(
             carrinho,
-            produtos);
+            _produtoRepository,
+            cancellationToken);
     }
 }

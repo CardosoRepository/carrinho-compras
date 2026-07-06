@@ -9,27 +9,34 @@ public sealed class RemoverCupomUseCase
 {
     private readonly ICarrinhoRepository _carrinhoRepository;
     private readonly IProdutoRepository _produtoRepository;
-    public RemoverCupomUseCase(ICarrinhoRepository carrinhoRepository, IProdutoRepository produtoRepository)
+
+    public RemoverCupomUseCase(
+        ICarrinhoRepository carrinhoRepository,
+        IProdutoRepository produtoRepository)
     {
         _carrinhoRepository = carrinhoRepository;
         _produtoRepository = produtoRepository;
     }
 
-    public async Task<CarrinhoResponse> ExecutarAsync(Guid carrinhoId, CancellationToken cancellationToken = default)
+    public async Task<CarrinhoResponse> ExecutarAsync(
+        Guid carrinhoId,
+        CancellationToken cancellationToken = default)
     {
-        var carrinho = await _carrinhoRepository.ObterParaAtualizacaoAsync(carrinhoId, cancellationToken)
-        ?? throw new RecursoNaoEncontradoException($"O carrinho '{carrinhoId}' não foi encontrado.");
+        var carrinho =
+            await _carrinhoRepository.ObterParaAtualizacaoAsync(
+                carrinhoId,
+                cancellationToken)
+            ?? throw new RecursoNaoEncontradoException(
+                $"O carrinho '{carrinhoId}' não foi encontrado.");
 
         carrinho.RemoverCupom();
 
-        await _carrinhoRepository.SalvarAlteracoesAsync(cancellationToken);
+        await _carrinhoRepository.SalvarAlteracoesAsync(
+            cancellationToken);
 
-        var produtoIds = carrinho.Itens
-            .Select(item => item.ProdutoId)
-            .Distinct();
-
-        var produtos = await _produtoRepository.ObterPorIdsAsync(produtoIds, cancellationToken);
-
-        return CarrinhoResponseFactory.Criar(carrinho, produtos);
+        return await CarrinhoResponseFactory.CriarAsync(
+            carrinho,
+            _produtoRepository,
+            cancellationToken);
     }
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { ProdutoCard } from "./components/ProdutoCard";
 import { ResumoCarrinho } from "./components/ResumoCarrinho";
@@ -38,6 +38,14 @@ function App() {
   const [finalizandoCarrinho, setFinalizandoCarrinho] = useState(false);
 
   const [erro, setErro] = useState<string | null>(null);
+
+  const operacaoEmAndamentoRef = useRef(false);
+
+  const operacaoEmAndamento =
+    criandoCarrinho ||
+    produtoEmProcessamento !== null ||
+    processandoCupom ||
+    finalizandoCarrinho;
 
   useEffect(() => {
     let ignorarResultado = false;
@@ -101,7 +109,25 @@ function App() {
     return carrinhoCriado;
   }
 
+  function tentarIniciarOperacao(): boolean {
+    if (operacaoEmAndamentoRef.current) {
+      return false;
+    }
+
+    operacaoEmAndamentoRef.current = true;
+
+    return true;
+  }
+
+  function encerrarOperacao() {
+    operacaoEmAndamentoRef.current = false;
+  }
+
   async function handleCriarCarrinho() {
+    if (!tentarIniciarOperacao()) {
+      return;
+    }
+
     setCriandoCarrinho(true);
     setErro(null);
 
@@ -111,10 +137,15 @@ function App() {
       setErro(obterMensagemErro(error));
     } finally {
       setCriandoCarrinho(false);
+      encerrarOperacao();
     }
   }
 
   async function handleAdicionarProduto(produtoId: string) {
+    if (!tentarIniciarOperacao()) {
+      return;
+    }
+
     setProdutoEmProcessamento(produtoId);
     setErro(null);
 
@@ -132,6 +163,7 @@ function App() {
       setErro(obterMensagemErro(error));
     } finally {
       setProdutoEmProcessamento(null);
+      encerrarOperacao();
     }
   }
 
@@ -139,7 +171,7 @@ function App() {
     produtoId: string,
     quantidade: number,
   ) {
-    if (!carrinho) {
+    if (!carrinho || !tentarIniciarOperacao()) {
       return;
     }
 
@@ -158,11 +190,12 @@ function App() {
       setErro(obterMensagemErro(error));
     } finally {
       setProdutoEmProcessamento(null);
+      encerrarOperacao();
     }
   }
 
   async function handleRemoverItem(produtoId: string) {
-    if (!carrinho) {
+    if (!carrinho || !tentarIniciarOperacao()) {
       return;
     }
 
@@ -177,11 +210,12 @@ function App() {
       setErro(obterMensagemErro(error));
     } finally {
       setProdutoEmProcessamento(null);
+      encerrarOperacao();
     }
   }
 
   async function handleAplicarCupom(codigoCupom: string): Promise<boolean> {
-    if (!carrinho) {
+    if (!carrinho || !tentarIniciarOperacao()) {
       return false;
     }
 
@@ -200,11 +234,12 @@ function App() {
       return false;
     } finally {
       setProcessandoCupom(false);
+      encerrarOperacao();
     }
   }
 
   async function handleRemoverCupom() {
-    if (!carrinho) {
+    if (!carrinho || !tentarIniciarOperacao()) {
       return;
     }
 
@@ -219,11 +254,12 @@ function App() {
       setErro(obterMensagemErro(error));
     } finally {
       setProcessandoCupom(false);
+      encerrarOperacao();
     }
   }
 
   async function handleFinalizarCarrinho() {
-    if (!carrinho) {
+    if (!carrinho || !tentarIniciarOperacao()) {
       return;
     }
 
@@ -238,6 +274,7 @@ function App() {
       setErro(obterMensagemErro(error));
     } finally {
       setFinalizandoCarrinho(false);
+      encerrarOperacao();
     }
   }
 
@@ -266,7 +303,7 @@ function App() {
           <button
             className="botao botao--primario"
             type="button"
-            disabled={criandoCarrinho}
+            disabled={operacaoEmAndamento}
             onClick={handleCriarCarrinho}
           >
             {criandoCarrinho ? "Criando..." : "Iniciar carrinho"}
@@ -303,7 +340,10 @@ function App() {
                   produto={produto}
                   quantidadeNoCarrinho={itemNoCarrinho?.quantidade ?? 0}
                   processando={produtoEmProcessamento === produto.id}
-                  desabilitado={carrinho !== null && !carrinhoAberto}
+                  desabilitado={
+                    operacaoEmAndamento ||
+                    (carrinho !== null && !carrinhoAberto)
+                  }
                   onAdicionar={handleAdicionarProduto}
                 />
               );
@@ -314,6 +354,7 @@ function App() {
         <ResumoCarrinho
           carrinho={carrinho}
           criandoCarrinho={criandoCarrinho}
+          operacaoEmAndamento={operacaoEmAndamento}
           produtoEmProcessamento={produtoEmProcessamento}
           processandoCupom={processandoCupom}
           finalizandoCarrinho={finalizandoCarrinho}

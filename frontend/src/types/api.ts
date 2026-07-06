@@ -1,3 +1,7 @@
+export type StatusCarrinho =
+    | "Aberto"
+    | "Finalizado";
+
 export interface Produto {
     id: string;
     descricaoProduto: string;
@@ -22,7 +26,7 @@ export interface CupomAplicado {
 
 export interface Carrinho {
     id: string;
-    status: string;
+    status: StatusCarrinho;
     itens: ItemCarrinho[];
     cupomAplicado: CupomAplicado | null;
     subtotal: number;

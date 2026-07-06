@@ -5,6 +5,7 @@ import { formatarMoeda } from "../utils/formatadores";
 interface ResumoCarrinhoProps {
   carrinho: Carrinho | null;
   criandoCarrinho: boolean;
+  operacaoEmAndamento: boolean;
   produtoEmProcessamento: string | null;
   processandoCupom: boolean;
   finalizandoCarrinho: boolean;
@@ -20,6 +21,7 @@ interface ResumoCarrinhoProps {
 export function ResumoCarrinho({
   carrinho,
   criandoCarrinho,
+  operacaoEmAndamento,
   produtoEmProcessamento,
   processandoCupom,
   finalizandoCarrinho,
@@ -42,7 +44,7 @@ export function ResumoCarrinho({
           <button
             className="botao botao--primario botao--largura-total"
             type="button"
-            disabled={criandoCarrinho}
+            disabled={operacaoEmAndamento}
             onClick={onCriarCarrinho}
           >
             {criandoCarrinho ? "Criando..." : "Iniciar carrinho"}
@@ -85,6 +87,7 @@ export function ResumoCarrinho({
               key={item.produtoId}
               item={item}
               carrinhoAberto={carrinhoAberto}
+              operacaoEmAndamento={operacaoEmAndamento}
               processando={produtoEmProcessamento === item.produtoId}
               onAlterarQuantidade={onAlterarQuantidade}
               onRemoverItem={onRemoverItem}
@@ -112,13 +115,13 @@ export function ResumoCarrinho({
           <strong>{formatarMoeda.format(carrinho.total)}</strong>
         </div>
       </div>
-      
+
       <AcoesCarrinho
         carrinho={carrinho}
         processandoCupom={processandoCupom}
         finalizandoCarrinho={finalizandoCarrinho}
         criandoCarrinho={criandoCarrinho}
-        operacaoDeItemEmAndamento={produtoEmProcessamento !== null}
+        operacaoEmAndamento={operacaoEmAndamento}
         onAplicarCupom={onAplicarCupom}
         onRemoverCupom={onRemoverCupom}
         onFinalizarCarrinho={onFinalizarCarrinho}
@@ -131,6 +134,7 @@ export function ResumoCarrinho({
 interface ItemDoCarrinhoProps {
   item: ItemCarrinho;
   carrinhoAberto: boolean;
+  operacaoEmAndamento: boolean;
   processando: boolean;
   onAlterarQuantidade: (produtoId: string, quantidade: number) => void;
   onRemoverItem: (produtoId: string) => void;
@@ -139,15 +143,17 @@ interface ItemDoCarrinhoProps {
 function ItemDoCarrinho({
   item,
   carrinhoAberto,
+  operacaoEmAndamento,
   processando,
   onAlterarQuantidade,
   onRemoverItem,
 }: ItemDoCarrinhoProps) {
-  const podeDiminuir = carrinhoAberto && !processando && item.quantidade > 1;
+  const podeDiminuir =
+    carrinhoAberto && !operacaoEmAndamento && item.quantidade > 1;
 
   const podeAumentar =
     carrinhoAberto &&
-    !processando &&
+    !operacaoEmAndamento &&
     item.quantidade < item.quantidadeDisponivelEstoque;
 
   return (
@@ -197,7 +203,7 @@ function ItemDoCarrinho({
         <button
           className="botao-remover"
           type="button"
-          disabled={!carrinhoAberto || processando}
+          disabled={!carrinhoAberto || operacaoEmAndamento}
           onClick={() => onRemoverItem(item.produtoId)}
         >
           {processando ? "Processando..." : "Remover"}

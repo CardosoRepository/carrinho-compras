@@ -11,6 +11,7 @@ public sealed class AplicarCupomUseCase
     private readonly ICarrinhoRepository _carrinhoRepository;
     private readonly IProdutoRepository _produtoRepository;
     private readonly ICupomRepository _cupomRepository;
+
     public AplicarCupomUseCase(
         ICarrinhoRepository carrinhoRepository,
         IProdutoRepository produtoRepository,
@@ -28,32 +29,40 @@ public sealed class AplicarCupomUseCase
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        if (string.IsNullOrWhiteSpace(request.CodigoCupom))
+        if (string.IsNullOrWhiteSpace(
+            request.CodigoCupom))
         {
-            throw new RegraDeNegocioException("O código do cupom é obrigatório.");
+            throw new RegraDeNegocioException(
+                "O código do cupom é obrigatório.");
         }
 
-        var carrinho = await _carrinhoRepository
-            .ObterParaAtualizacaoAsync(carrinhoId, cancellationToken)
-            ?? throw new RecursoNaoEncontradoException($"O carrinho '{carrinhoId}' não foi encontrado.");
+        var carrinho =
+            await _carrinhoRepository.ObterParaAtualizacaoAsync(
+                carrinhoId,
+                cancellationToken)
+            ?? throw new RecursoNaoEncontradoException(
+                $"O carrinho '{carrinhoId}' não foi encontrado.");
 
-        var codigoCupom = request.CodigoCupom
-            .Trim()
-            .ToUpperInvariant();
+        var codigoCupom =
+            request.CodigoCupom
+                .Trim()
+                .ToUpperInvariant();
 
-        var cupom = await _cupomRepository
-            .ObterPorCodigoAsync(codigoCupom, cancellationToken)
-            ?? throw new RegraDeNegocioException("O cupom informado é inválido.");
+        var cupom =
+            await _cupomRepository.ObterPorCodigoAsync(
+                codigoCupom,
+                cancellationToken)
+            ?? throw new RegraDeNegocioException(
+                "O cupom informado é inválido.");
 
         carrinho.AplicarCupom(cupom);
 
-        await _carrinhoRepository.SalvarAlteracoesAsync(cancellationToken);
+        await _carrinhoRepository.SalvarAlteracoesAsync(
+            cancellationToken);
 
-        var produtoIds = carrinho.Itens
-            .Select(item => item.ProdutoId)
-            .Distinct();
-
-        var produtos = await _produtoRepository.ObterPorIdsAsync(produtoIds, cancellationToken);
-        return CarrinhoResponseFactory.Criar(carrinho, produtos);
+        return await CarrinhoResponseFactory.CriarAsync(
+            carrinho,
+            _produtoRepository,
+            cancellationToken);
     }
 }

@@ -30,13 +30,15 @@ public sealed class AlterarQuantidadeItemUseCase
             await _carrinhoRepository.ObterParaAtualizacaoAsync(
                 carrinhoId,
                 cancellationToken)
-            ?? throw new RecursoNaoEncontradoException($"O carrinho '{carrinhoId}' não foi encontrado.");
+            ?? throw new RecursoNaoEncontradoException(
+                $"O carrinho '{carrinhoId}' não foi encontrado.");
 
         var produto =
             await _produtoRepository.ObterPorIdAsync(
                 produtoId,
                 cancellationToken)
-            ?? throw new RecursoNaoEncontradoException($"O produto '{produtoId}' não foi encontrado.");
+            ?? throw new RecursoNaoEncontradoException(
+                $"O produto '{produtoId}' não foi encontrado.");
 
         carrinho.AlterarQuantidade(
             produto,
@@ -45,18 +47,9 @@ public sealed class AlterarQuantidadeItemUseCase
         await _carrinhoRepository.SalvarAlteracoesAsync(
             cancellationToken);
 
-        var produtoIds =
-            carrinho.Itens
-                .Select(item => item.ProdutoId)
-                .Distinct();
-
-        var produtos =
-            await _produtoRepository.ObterPorIdsAsync(
-                produtoIds,
-                cancellationToken);
-
-        return CarrinhoResponseFactory.Criar(
+        return await CarrinhoResponseFactory.CriarAsync(
             carrinho,
-            produtos);
+            _produtoRepository,
+            cancellationToken);
     }
 }

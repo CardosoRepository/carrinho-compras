@@ -53,18 +53,9 @@ public sealed class AdicionarItemUseCase
         await _carrinhoRepository.SalvarAlteracoesAsync(
             cancellationToken);
 
-        var produtoIds =
-            carrinho.Itens
-                .Select(item => item.ProdutoId)
-                .Distinct();
-
-        var produtos =
-            await _produtoRepository.ObterPorIdsAsync(
-                produtoIds,
-                cancellationToken);
-
-        return CarrinhoResponseFactory.Criar(
+        return await CarrinhoResponseFactory.CriarAsync(
             carrinho,
-            produtos);
+            _produtoRepository,
+            cancellationToken);
     }
 }

@@ -18,6 +18,29 @@ export function ProdutoCard({
 }: ProdutoCardProps) {
   const semEstoque = produto.quantidadeEstoque === 0;
 
+  const atingiuLimiteDoEstoque =
+    quantidadeNoCarrinho >= produto.quantidadeEstoque;
+
+  function obterTextoBotao() {
+    if (processando) {
+      return "Adicionando...";
+    }
+
+    if (semEstoque) {
+      return "Sem estoque";
+    }
+
+    if (atingiuLimiteDoEstoque) {
+      return "Limite atingido";
+    }
+
+    if (quantidadeNoCarrinho > 0) {
+      return "Adicionar mais";
+    }
+
+    return "Adicionar";
+  }
+
   return (
     <article className="produto-card">
       <div className="produto-card__conteudo">
@@ -40,14 +63,10 @@ export function ProdutoCard({
         <button
           className="botao botao--primario"
           type="button"
-          disabled={desabilitado || processando || semEstoque}
+          disabled={desabilitado || processando || atingiuLimiteDoEstoque}
           onClick={() => onAdicionar(produto.id)}
         >
-          {processando
-            ? "Adicionando..."
-            : quantidadeNoCarrinho > 0
-              ? "Adicionar mais"
-              : "Adicionar"}
+          {obterTextoBotao()}
         </button>
       </div>
     </article>
