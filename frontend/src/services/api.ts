@@ -4,7 +4,7 @@ import type {
     Produto,
 } from "../types/api";
 
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:5008";
+const API_URL = import.meta.env.VITE_API_URL ?? "";
 
 export class ApiError extends Error {
     public readonly status: number;
